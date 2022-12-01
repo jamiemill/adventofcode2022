@@ -1,15 +1,9 @@
-
 // returns [1000,3000,2000], a list of total calories of each elf
 function parseInput(input:string):number[] {
-  const elves = [0];
-  input.split("\n").forEach((line:string) => {
-    if (line !== "") {
-      elves[elves.length-1] += parseInt(line);
-    } else {
-      elves.push(0);
-    }
-  })
-  return elves;
+  return input.split("\n\n").map(elf => {
+    const items = elf.split("\n").map(parseFloat);
+    return sumArr(items);
+  });
 }
 
 function sumArr(arr:number[]):number {
