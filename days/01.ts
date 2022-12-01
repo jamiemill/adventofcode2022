@@ -1,6 +1,6 @@
 
 // returns [1000,3000,2000], a list of total calories of each elf
-function parseInput(input:string):any {
+function parseInput(input:string):number[] {
   const elves = [0];
   input.split("\n").forEach((line:string) => {
     if (line !== "") {
@@ -21,7 +21,7 @@ export function part1(input:string):number {
   return Math.max(...elves);
 }
 
-function sortDesc (a:number,b:number) {return b-a};
+function sortDesc (a:number,b:number) {return b-a;}
 
 export function part2(input:string):number {
   const elves = parseInput(input);
