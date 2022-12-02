@@ -28,11 +28,10 @@ const pointsForResult = {
 function resultOf(them:Shape, me:Shape):Result {
   if (them === me) {
     return "DRAW";
-  } else if (them === "ROCK" && me === "PAPER") {
-    return "WIN";
-  } else if (them === "PAPER" && me === "SCISSORS") {
-    return "WIN";
-  } else if (them === "SCISSORS" && me === "ROCK") {
+  } else if (
+    (them === "ROCK" && me === "PAPER") ||
+    (them === "PAPER" && me === "SCISSORS") ||
+    (them === "SCISSORS" && me === "ROCK")) {
     return "WIN"
   } else {
     return "LOSS"
