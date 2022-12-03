@@ -1,9 +1,11 @@
 import {
+  compose,
   intersection,
+  map,
   splitAt,
   splitEvery,
   sum,
-  uniq,
+  union,
 } from "https://cdn.skypack.dev/ramda?dts";
 
 type Item = string;
@@ -38,15 +40,16 @@ export function getItemPriority(item: Item): number {
 }
 
 export function part1(input: string): number {
-  return sum(
-    parseInput(input)
-      .map(findDuplicateItem)
-      .map(getItemPriority),
-  );
+  return compose(
+    sum,
+    map(getItemPriority),
+    map(findDuplicateItem),
+    parseInput,
+  )(input);
 }
 
 function uniqRucksackItems(rucksack: Rucksack): Item[] {
-  return uniq(rucksack.compartmentA.concat(rucksack.compartmentB));
+  return union(rucksack.compartmentA, rucksack.compartmentB);
 }
 
 export function findCommonItem(rucksacks: Rucksack[]): Item {
@@ -57,15 +60,17 @@ export function findCommonItem(rucksacks: Rucksack[]): Item {
   );
 
   if (commonItems.length !== 1) {
-    throw "Expected one common ite,";
+    throw "Expected one common item";
   }
   return commonItems[0];
 }
 
 export function part2(input: string): number {
-  return sum(
-    splitEvery(3, parseInput(input))
-      .map(findCommonItem)
-      .map(getItemPriority),
-  );
+  return compose(
+    sum,
+    map(getItemPriority),
+    map(findCommonItem),
+    splitEvery(3),
+    parseInput,
+  )(input);
 }
