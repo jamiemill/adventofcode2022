@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import {parseInput,findDuplicateItem,getItemPriority,part1} from "./03.ts";
+import {parseInput,findDuplicateItem,getItemPriority,splitIntoThrees,part1} from "./03.ts";
 
 
 const testDataFromExample =
@@ -52,13 +52,19 @@ Deno.test("Day 3 Part 1", async (t) => {
     });
 });
 
-// Deno.test("Day 3 Part 2", async (t) => {
-//     await t.step("example", () => {
-//         assertEquals(part2(testDataFromExample), 12);
-//     })
+Deno.test("Day 3 Part 2", async (t) => {
 
-//     await t.step("answer", async () => {
-//         const input = await Deno.readTextFile(`./days/03.txt`);
-//         assertEquals(part2(input), 10334);
-//     });
-// });
+    await t.step("split into threes", () => {
+        const input = [1,2,3,4,5,6];
+        assertEquals(splitIntoThrees(input), [[1,2,3],[4,5,6]]);
+    });
+
+    // await t.step("example", () => {
+    //     assertEquals(part2(testDataFromExample), 0);
+    // })
+
+    // await t.step("answer", async () => {
+    //     const input = await Deno.readTextFile(`./days/03.txt`);
+    //     assertEquals(part2(input), 10334);
+    // });
+});

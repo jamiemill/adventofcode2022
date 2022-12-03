@@ -42,3 +42,17 @@ export function part1(input:string):number {
   const duplicates = rucksacks.map(findDuplicateItem);
   return sumOfDuplicatePriorities(duplicates);
 }
+
+// use radash?
+export function splitIntoThrees<T>(input:Array<T>):Array<Array<T>> {
+  const threes:Array<Array<T>> = [];
+  for (let i = 0; i < input.length; i++) {
+    if (i%3 === 0) {threes.push([])}
+    threes[threes.length-1].push(input[i]);
+  }
+  return threes;
+}
+
+// export function part2(input:string):number {
+
+// }
