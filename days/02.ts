@@ -22,19 +22,20 @@ const pointsForShape = {
 const pointsForResult = {
   WIN: 6,
   DRAW: 3,
-  LOSS: 0
-}
+  LOSS: 0,
+};
 
-function resultOf(them:Shape, me:Shape):Result {
+function resultOf(them: Shape, me: Shape): Result {
   if (them === me) {
     return "DRAW";
   } else if (
     (them === "ROCK" && me === "PAPER") ||
     (them === "PAPER" && me === "SCISSORS") ||
-    (them === "SCISSORS" && me === "ROCK")) {
-    return "WIN"
+    (them === "SCISSORS" && me === "ROCK")
+  ) {
+    return "WIN";
   } else {
-    return "LOSS"
+    return "LOSS";
   }
 }
 
@@ -47,13 +48,14 @@ function parseInput(input: string): StrategyGuide {
   });
 }
 
-function scoreGame(strategy:StrategyGuide):number {
+function scoreGame(strategy: StrategyGuide): number {
   return strategy.reduce((acc, item) => {
-    return acc + pointsForShape[item.me] + pointsForResult[resultOf(item.them, item.me)];
-  },0)
+    return acc + pointsForShape[item.me] +
+      pointsForResult[resultOf(item.them, item.me)];
+  }, 0);
 }
 
-export function part1(input: string):number  {
+export function part1(input: string): number {
   const strategy = parseInput(input);
   return scoreGame(strategy);
 }
@@ -64,29 +66,34 @@ const decodeResult: { [key: string]: Result } = {
   Z: "WIN",
 };
 
-type DesiredResultsStrategyGuide = Array<{ them: Shape; desiredResult: Result }>;
+type DesiredResultsStrategyGuide = Array<
+  { them: Shape; desiredResult: Result }
+>;
 
 function parseInputPart2(input: string): DesiredResultsStrategyGuide {
   return input.split("\n").map((line) => {
     const lineParts = line.split(" ");
-    return { them: decodeThem[lineParts[0]], desiredResult: decodeResult[lineParts[1]] };
+    return {
+      them: decodeThem[lineParts[0]],
+      desiredResult: decodeResult[lineParts[1]],
+    };
   });
 }
 
-const toBeat: {[K in Shape]:Shape} = {
+const toBeat: { [K in Shape]: Shape } = {
   ROCK: "PAPER",
   PAPER: "SCISSORS",
-  SCISSORS: "ROCK"
+  SCISSORS: "ROCK",
 };
 
 // could generate by inverting the above somehow
-const toLoseTo: {[K in Shape]:Shape} = {
+const toLoseTo: { [K in Shape]: Shape } = {
   ROCK: "SCISSORS",
   PAPER: "ROCK",
-  SCISSORS: "PAPER"
+  SCISSORS: "PAPER",
 };
 
-function howToAchieve(desiredResult:Result, theirShape:Shape):Shape {
+function howToAchieve(desiredResult: Result, theirShape: Shape): Shape {
   if (desiredResult === "WIN") {
     return toBeat[theirShape];
   } else if (desiredResult === "LOSS") {
@@ -96,17 +103,19 @@ function howToAchieve(desiredResult:Result, theirShape:Shape):Shape {
   }
 }
 
-function decideWhatToPlay(desiredResults:DesiredResultsStrategyGuide):StrategyGuide {
-  return desiredResults.map(round => {
+function decideWhatToPlay(
+  desiredResults: DesiredResultsStrategyGuide,
+): StrategyGuide {
+  return desiredResults.map((round) => {
     return {
       them: round.them,
-      me: howToAchieve(round.desiredResult, round.them)
-    }
+      me: howToAchieve(round.desiredResult, round.them),
+    };
   });
 }
 
 export function part2(input: string): number {
-  const desiredResults:DesiredResultsStrategyGuide = parseInputPart2(input);
-  const whatToPlay:StrategyGuide = decideWhatToPlay(desiredResults);
+  const desiredResults: DesiredResultsStrategyGuide = parseInputPart2(input);
+  const whatToPlay: StrategyGuide = decideWhatToPlay(desiredResults);
   return scoreGame(whatToPlay);
 }
