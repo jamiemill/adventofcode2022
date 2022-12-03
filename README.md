@@ -11,5 +11,5 @@ deno task test .
 or to run a specific day:
 
 ```
-deno task test days/02.test.ts
+deno task test days/02/test.ts
 ```

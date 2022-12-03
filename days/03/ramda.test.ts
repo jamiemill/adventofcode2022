@@ -7,8 +7,7 @@ import {
   part1,
   part2,
   Rucksack,
-  splitIntoThrees,
-} from "./03.ts";
+} from "./indexramda.ts";
 
 const testDataFromExample = `vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
@@ -17,7 +16,7 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw`;
 
-Deno.test("Day 3 Part 1", async (t) => {
+Deno.test("Day 3 (Ramda) Part 1", async (t) => {
   await t.step("parsesInput", () => {
     const exampleInput = `aBcD\neFgH`;
     const expected = [
@@ -51,17 +50,12 @@ Deno.test("Day 3 Part 1", async (t) => {
   });
 
   await t.step("answer", async () => {
-    const input = await Deno.readTextFile(`./days/03.txt`);
+    const input = await Deno.readTextFile(`./days/03/input.txt`);
     assertEquals(part1(input), 8153);
   });
 });
 
-Deno.test("Day 3 Part 2", async (t) => {
-  await t.step("split into threes", () => {
-    const input = [1, 2, 3, 4, 5, 6];
-    assertEquals(splitIntoThrees(input), [[1, 2, 3], [4, 5, 6]]);
-  });
-
+Deno.test("Day 3 (Ramda) Part 2", async (t) => {
   await t.step("find common item", () => {
     const rucksacks: Rucksack[] = [
       {
@@ -85,7 +79,7 @@ Deno.test("Day 3 Part 2", async (t) => {
   });
 
   await t.step("answer", async () => {
-    const input = await Deno.readTextFile(`./days/03.txt`);
+    const input = await Deno.readTextFile(`./days/03/input.txt`);
     assertEquals(part2(input), 2342);
   });
 });
