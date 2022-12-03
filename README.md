@@ -5,5 +5,11 @@ Using Typescript and Deno.
 Run like:
 
 ```
-deno task test
+deno task test .
+```
+
+or to run a specific day:
+
+```
+deno task test days/02.test.ts
 ```
