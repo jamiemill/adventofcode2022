@@ -7,9 +7,10 @@ type Rucksack = {
 
 export function parseInput(input:string):Rucksack[] {
   return input.split("\n").map(line => {
+    const items = line.split("");
     return {
-      compartmentA: line.slice(0, line.length/2).split(""),
-      compartmentB: line.slice(-line.length/2).split("")
+      compartmentA: items.slice(0, items.length/2),
+      compartmentB: items.slice(-items.length/2)
     };
   })
 }
@@ -27,9 +28,9 @@ export function findDuplicateItem(rucksack:Rucksack):Item {
   return duplicateItem;
 }
 
-const priorityMap = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const priorityOrder = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export function getItemPriority(item:Item):number {
-  return priorityMap.indexOf(item) + 1;
+  return priorityOrder.indexOf(item) + 1;
 }
 
 function sumOfDuplicatePriorities(duplicates:Item[]) {
