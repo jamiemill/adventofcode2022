@@ -16,14 +16,20 @@ Deno.test("Day 3 Part 1", async (t) => {
     await t.step("parsesInput", () => {
         const exampleInput = `aBcD\neFgH`;
         const expected = [
-            {compartments: [["a","B"],["c","D"]]},
-            {compartments: [["e","F"],["g","H"]]}
+            {
+                compartmentA: ["a","B"],
+                compartmentB: ["c","D"]
+            },
+            {
+                compartmentA: ["e","F"],
+                compartmentB: ["g","H"]
+            }
         ]
         assertEquals(parseInput(exampleInput), expected);
     });
 
     await t.step("findsDuplicate", () => {
-        const rucksack = {compartments: [["Z","F"],["Z","H"]]};
+        const rucksack = {compartmentA:["Z","F"], compartmentB:["Z","H"]};
         assertEquals(findDuplicateItem(rucksack), "Z");
     })
 
