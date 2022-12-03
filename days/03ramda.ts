@@ -38,34 +38,34 @@ export function getItemPriority(item: Item): number {
 }
 
 export function part1(input: string): number {
-  const rucksacks = parseInput(input);
-  const duplicates = rucksacks.map(findDuplicateItem);
-  return sum(duplicates.map(getItemPriority));
+  return sum(
+    parseInput(input)
+      .map(findDuplicateItem)
+      .map(getItemPriority),
+  );
 }
 
-function allUniqueItemsInRucksack(rucksack: Rucksack): Item[] {
+function uniqRucksackItems(rucksack: Rucksack): Item[] {
   return uniq(rucksack.compartmentA.concat(rucksack.compartmentB));
 }
 
 export function findCommonItem(rucksacks: Rucksack[]): Item {
-  const [firstRucksackContent, ...otherRucksacks] = rucksacks.map(allUniqueItemsInRucksack);
-  const commonItems = otherRucksacks.reduce(
-    (acc, content) => intersection(acc, content),
-    firstRucksackContent
+  const [first, ...rest] = rucksacks;
+  const commonItems = rest.reduce(
+    (acc, r) => intersection(acc, uniqRucksackItems(r)),
+    uniqRucksackItems(first),
   );
 
-  if (commonItems.length === 0) {
-    throw "Didn't find anything common to all rucksacks";
-  }
-  if (commonItems.length > 1) {
-    throw "Found more than one item common to all rucksacks";
+  if (commonItems.length !== 1) {
+    throw "Expected one common ite,";
   }
   return commonItems[0];
 }
 
 export function part2(input: string): number {
-  const groups = splitEvery(3, parseInput(input));
-  const commonItemOfEachGroups = groups.map(findCommonItem);
-  const priorities = commonItemOfEachGroups.map(getItemPriority);
-  return priorities.reduce((sum, priority) => sum + priority, 0);
+  return sum(
+    splitEvery(3, parseInput(input))
+      .map(findCommonItem)
+      .map(getItemPriority),
+  );
 }
