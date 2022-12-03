@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import {parseInput,findDuplicateItem,getItemPriority,splitIntoThrees,part1} from "./03.ts";
+import {parseInput,findDuplicateItem,getItemPriority,splitIntoThrees,part1,part2, Rucksack, findCommonItem} from "./03.ts";
 
 
 const testDataFromExample =
@@ -59,12 +59,30 @@ Deno.test("Day 3 Part 2", async (t) => {
         assertEquals(splitIntoThrees(input), [[1,2,3],[4,5,6]]);
     });
 
-    // await t.step("example", () => {
-    //     assertEquals(part2(testDataFromExample), 0);
-    // })
+    await t.step("find common item", () => {
+        const rucksacks:Rucksack[] = [
+            {
+                compartmentA: ["A","B"],
+                compartmentB: ["c", "d"],
+            },
+            {
+                compartmentA: ["e","f"],
+                compartmentB: ["B", "A"]
+            },
+            {
+                compartmentA: ["h","i"],
+                compartmentB: ["A", "j"]
+            }
+        ];
+        assertEquals(findCommonItem(rucksacks), "A");
+    });
 
-    // await t.step("answer", async () => {
-    //     const input = await Deno.readTextFile(`./days/03.txt`);
-    //     assertEquals(part2(input), 10334);
-    // });
+    await t.step("example", () => {
+        assertEquals(part2(testDataFromExample), 70);
+    })
+
+    await t.step("answer", async () => {
+        const input = await Deno.readTextFile(`./days/03.txt`);
+        assertEquals(part2(input), 2342);
+    });
 });
