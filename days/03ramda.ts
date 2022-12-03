@@ -1,4 +1,10 @@
-import {intersection, splitAt, splitEvery, sum, uniq} from "https://cdn.skypack.dev/ramda?dts";
+import {
+  intersection,
+  splitAt,
+  splitEvery,
+  sum,
+  uniq,
+} from "https://cdn.skypack.dev/ramda?dts";
 
 type Item = string;
 
@@ -10,10 +16,10 @@ export type Rucksack = {
 export function parseInput(input: string): Rucksack[] {
   return input.split("\n").map((line) => {
     const items = line.split("");
-    const [compartmentA,compartmentB] = splitAt(items.length/2, items)
+    const [compartmentA, compartmentB] = splitAt(items.length / 2, items);
     return {
       compartmentA,
-      compartmentB
+      compartmentB,
     };
   });
 }
@@ -42,19 +48,19 @@ function allUniqueItemsInRucksack(rucksack: Rucksack): Item[] {
 }
 
 export function findCommonItem(rucksacks: Rucksack[]): Item {
-  let candidates = allUniqueItemsInRucksack(rucksacks[0]);
-  for (let i = 1; i < rucksacks.length; i++) {
-    const nextRucksackUniqueItems = allUniqueItemsInRucksack(rucksacks[i]);
-    candidates = candidates.filter((item) => nextRucksackUniqueItems.includes(item));
-  }
-  
-  if (candidates.length === 0) {
+  const [firstRucksackContent, ...otherRucksacks] = rucksacks.map(allUniqueItemsInRucksack);
+  const commonItems = otherRucksacks.reduce(
+    (acc, content) => intersection(acc, content),
+    firstRucksackContent
+  );
+
+  if (commonItems.length === 0) {
     throw "Didn't find anything common to all rucksacks";
   }
-  if (candidates.length > 1) {
+  if (commonItems.length > 1) {
     throw "Found more than one item common to all rucksacks";
   }
-  return candidates[0];
+  return commonItems[0];
 }
 
 export function part2(input: string): number {
