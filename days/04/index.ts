@@ -20,9 +20,9 @@ function expandSectors(pairs: Pair[]): Pair[] {
 
 function sectorsFullyOverlap(pairOfElfs: Elf[]): boolean {
   const [elf1, elf2] = pairOfElfs;
-  const overlap = intersection(elf1, elf2);
-  return (overlap.length >= pairOfElfs[0].length ||
-    overlap.length >= pairOfElfs[1].length);
+  const overlapSize = intersection(elf1, elf2).length;
+  return (overlapSize >= elf1.length ||
+    overlapSize >= elf2.length);
 }
 
 // alternative to compare start and end instead
