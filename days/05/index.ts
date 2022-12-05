@@ -1,4 +1,4 @@
-import { clone, intersection, range } from "https://cdn.skypack.dev/ramda?dts";
+import { clone } from "https://cdn.skypack.dev/ramda?dts";
 
 export type Yard = { stacks: Array<Stack> };
 type Stack = { crates: Array<Crate> };
@@ -93,5 +93,25 @@ function getTopCrateOfEachStack(yard: Yard): string[] {
 export function part1(input: string): string {
   const { startState, instructions } = parseInput(input);
   const endState = operateCrane(startState, instructions);
+  return getTopCrateOfEachStack(endState).join("");
+}
+
+function followInstruction9001(state: Yard, instruction: Instruction): Yard {
+  const nextState = clone(state);
+  const { count, fromStackID, toStackID } = instruction;
+  const fromStack = nextState.stacks[fromStackID - 1];
+  const toStack = nextState.stacks[toStackID - 1];
+  const pickedUpCrates = fromStack.crates.splice(-count);
+  toStack.crates.push(...pickedUpCrates);
+  return nextState;
+}
+
+function operateCrane9001(state: Yard, instructions: Instruction[]): Yard {
+  return instructions.reduce(followInstruction9001, state);
+}
+
+export function part2(input: string): string {
+  const { startState, instructions } = parseInput(input);
+  const endState = operateCrane9001(startState, instructions);
   return getTopCrateOfEachStack(endState).join("");
 }

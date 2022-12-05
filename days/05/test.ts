@@ -4,6 +4,7 @@ import {
   parseInstructions,
   parseStartState,
   part1,
+  part2,
   Yard,
 } from "./index.ts";
 
@@ -53,13 +54,13 @@ Deno.test("Day 4 Part 1", async (t) => {
   });
 });
 
-// Deno.test("Day 4 Part 2", async (t) => {
-//   await t.step("example", () => {
-//     assertEquals(part2(testDataFromExample), 4);
-//   });
+Deno.test("Day 4 Part 2", async (t) => {
+  await t.step("example", () => {
+    assertEquals(part2(testDataFromExample), "MCD");
+  });
 
-//   await t.step("answer", async () => {
-//     const input = await Deno.readTextFile(`./days/04/input.txt`);
-//     assertEquals(part2(input), 849);
-//   });
-// });
+  await t.step("answer", async () => {
+    const input = await Deno.readTextFile(`./days/05/input.txt`);
+    assertEquals(part2(input), "");
+  });
+});
