@@ -47,10 +47,10 @@ Deno.test("Day 4 Part 1", async (t) => {
     assertEquals(part1(testDataFromExample), "CMZ");
   });
 
-  // await t.step("answer", async () => {
-  //   const input = await Deno.readTextFile(`./days/04/input.txt`);
-  //   assertEquals(part1(input), 487);
-  // });
+  await t.step("answer", async () => {
+    const input = await Deno.readTextFile(`./days/05/input.txt`);
+    assertEquals(part1(input), "SHMSDGZVC");
+  });
 });
 
 // Deno.test("Day 4 Part 2", async (t) => {

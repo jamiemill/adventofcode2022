@@ -1,4 +1,4 @@
-import { intersection, range } from "https://cdn.skypack.dev/ramda?dts";
+import { clone, intersection, range } from "https://cdn.skypack.dev/ramda?dts";
 
 export type Yard = { stacks: Array<Stack> };
 type Stack = { crates: Array<Crate> };
@@ -6,6 +6,10 @@ type Crate = string;
 
 function parseInput(input: string): any {
   const [startStateStr, instructionsStr] = input.split("\n\n");
+  return {
+    startState: parseStartState(startStateStr),
+    instructions: parseInstructions(instructionsStr),
+  };
 }
 
 /**
@@ -65,7 +69,29 @@ export function parseInstructions(input: string): Instruction[] {
     });
 }
 
+function followInstruction(state: Yard, instruction: Instruction): Yard {
+  const nextState = clone(state);
+  const { count, fromStackID, toStackID } = instruction;
+  for (let i = 1; i <= count; i++) {
+    const crate = nextState.stacks[fromStackID - 1].crates.pop();
+    if (!crate) {
+      throw "No crates left!";
+    }
+    nextState.stacks[toStackID - 1].crates.push(crate);
+  }
+  return nextState;
+}
+
+function operateCrane(state: Yard, instructions: Instruction[]): Yard {
+  return instructions.reduce(followInstruction, state);
+}
+
+function getTopCrateOfEachStack(yard: Yard): string[] {
+  return yard.stacks.map((stack) => stack.crates[stack.crates.length - 1]);
+}
+
 export function part1(input: string): string {
-  const res = parseInput(input);
-  return "CMZ";
+  const { startState, instructions } = parseInput(input);
+  const endState = operateCrane(startState, instructions);
+  return getTopCrateOfEachStack(endState).join("");
 }
