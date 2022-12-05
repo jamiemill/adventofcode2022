@@ -1,10 +1,18 @@
 import { clone } from "https://cdn.skypack.dev/ramda?dts";
 
+const FIRST_POS = 1;
+const SPACE_BETWEEN = 4;
+
 export type Yard = { stacks: Array<Stack> };
 type Stack = { crates: Array<Crate> };
 type Crate = string;
 
-function parseInput(input: string): any {
+type Input = {
+  startState: Yard;
+  instructions: Instruction[];
+};
+
+function parseInput(input: string): Input {
   const [startStateStr, instructionsStr] = input.split("\n\n");
   return {
     startState: parseStartState(startStateStr),
@@ -12,17 +20,7 @@ function parseInput(input: string): any {
   };
 }
 
-/**
- * strategy:
- * reverse the lines
- * strip the first line
- * iterate through a line, fetching the letter in every 4th position, starting from 1, not 0.
- * push those into the stack content arrays
- */
-
 export function parseStartState(input: string): Yard {
-  const FIRST_POS = 1;
-  const SPACE_BETWEEN = 4;
   const startState: Yard = { stacks: [] };
   input.split("\n")
     .reverse() // reverse it so we start bottom-up instead of top-down
@@ -49,17 +47,18 @@ export type Instruction = {
   fromStackID: number;
   toStackID: number;
 };
+const MATCHER = /move ([\d]+) from ([\d]+) to ([\d]+)/;
+
 export function parseInstructions(input: string): Instruction[] {
   return input
     .split("\n")
     .map((line) => {
-      const MATCHER = /move ([\d]+) from ([\d]+) to ([\d]+)/;
-      const res = line.match(MATCHER);
+      const instructionParts = line.match(MATCHER);
 
-      if (!res) {
+      if (!instructionParts) {
         throw "Could not match";
       }
-      const [_all, count, fromStackID, toStackID] = res;
+      const [_all, count, fromStackID, toStackID] = instructionParts;
 
       return {
         count: parseFloat(count),
