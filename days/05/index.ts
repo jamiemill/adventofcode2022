@@ -27,15 +27,15 @@ export function parseStartState(input: string): Yard {
     .slice(1) // remove the first row which are just labels
     .forEach((line) => {
       for (
-        let i = FIRST_POS, stackID = 0;
-        i < line.length;
-        i += SPACE_BETWEEN, stackID++
+        let textCol = FIRST_POS, stackIndex = 0;
+        textCol < line.length;
+        textCol += SPACE_BETWEEN, stackIndex++
       ) {
-        if (!startState.stacks[stackID]) {
-          startState.stacks[stackID] = { crates: [] };
+        if (!startState.stacks[stackIndex]) {
+          startState.stacks[stackIndex] = { crates: [] };
         }
-        if (line[i] !== " ") {
-          startState.stacks[stackID].crates.push(line[i]);
+        if (line[textCol] !== " ") {
+          startState.stacks[stackIndex].crates.push(line[textCol]);
         }
       }
     });
