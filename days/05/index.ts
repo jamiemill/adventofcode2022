@@ -1,8 +1,5 @@
 import { clone } from "https://cdn.skypack.dev/ramda?dts";
 
-const FIRST_POS = 1;
-const SPACE_BETWEEN = 4;
-
 export type Yard = { stacks: Array<Stack> };
 type Stack = { crates: Array<Crate> };
 type Crate = string;
@@ -19,6 +16,9 @@ function parseInput(input: string): Input {
     instructions: parseInstructions(instructionsStr),
   };
 }
+
+const FIRST_POS = 1; // the first crate stack is found in column 1
+const SPACE_BETWEEN = 4; // and then every 4th column you'll find the next crate stack
 
 export function parseStartState(input: string): Yard {
   const startState: Yard = { stacks: [] };
@@ -54,12 +54,10 @@ export function parseInstructions(input: string): Instruction[] {
     .split("\n")
     .map((line) => {
       const instructionParts = line.match(MATCHER);
-
       if (!instructionParts) {
         throw "Could not match";
       }
       const [_all, count, fromStackID, toStackID] = instructionParts;
-
       return {
         count: parseFloat(count),
         fromStackID: parseFloat(fromStackID),
