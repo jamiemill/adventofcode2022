@@ -6,7 +6,6 @@ type Crate = string;
 
 function parseInput(input: string): any {
   const [startStateStr, instructionsStr] = input.split("\n\n");
-  console.log(startStateStr, instructionsStr);
 }
 
 /**
@@ -39,6 +38,31 @@ export function parseStartState(input: string): Yard {
       }
     });
   return startState;
+}
+
+export type Instruction = {
+  count: number;
+  fromStackID: number;
+  toStackID: number;
+};
+export function parseInstructions(input: string): Instruction[] {
+  return input
+    .split("\n")
+    .map((line) => {
+      const MATCHER = /move ([\d]+) from ([\d]+) to ([\d]+)/;
+      const res = line.match(MATCHER);
+
+      if (!res) {
+        throw "Could not match";
+      }
+      const [_all, count, fromStackID, toStackID] = res;
+
+      return {
+        count: parseFloat(count),
+        fromStackID: parseFloat(fromStackID),
+        toStackID: parseFloat(toStackID),
+      };
+    });
 }
 
 export function part1(input: string): string {

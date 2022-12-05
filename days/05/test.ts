@@ -1,5 +1,11 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import { parseStartState, part1, Yard } from "./index.ts";
+import {
+  Instruction,
+  parseInstructions,
+  parseStartState,
+  part1,
+  Yard,
+} from "./index.ts";
 
 const testDataFromExample = `    [D]    
 [N] [C]    
@@ -22,6 +28,18 @@ Deno.test("Day 4 Part 1", async (t) => {
       ],
     };
     const actual = parseStartState(startState);
+    assertEquals(actual, expected);
+  });
+
+  await t.step("parse instructions", () => {
+    const instructions = testDataFromExample.split("\n\n")[1];
+    const expected: Instruction[] = [
+      { count: 1, fromStackID: 2, toStackID: 1 },
+      { count: 3, fromStackID: 1, toStackID: 3 },
+      { count: 2, fromStackID: 2, toStackID: 1 },
+      { count: 1, fromStackID: 1, toStackID: 2 },
+    ];
+    const actual = parseInstructions(instructions);
     assertEquals(actual, expected);
   });
 
