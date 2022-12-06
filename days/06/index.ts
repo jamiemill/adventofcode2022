@@ -1,18 +1,18 @@
 import { uniq } from "https://cdn.skypack.dev/ramda?dts";
 
 function findUniqueSeq(input: string, length: number): number {
-  let startOfPacket: number | null = null;
+  let endOfSeq: number | null = null;
   for (let i = (length - 1); i < input.length; i++) {
     const candidateSeq = input.slice(i - (length - 1), i + 1).split("");
     if (uniq(candidateSeq).length === length) {
-      startOfPacket = i;
+      endOfSeq = i;
       break;
     }
   }
-  if (startOfPacket === null) {
+  if (endOfSeq === null) {
     throw "Not found";
   }
-  return startOfPacket;
+  return endOfSeq;
 }
 
 export function part1(input: string): number {
