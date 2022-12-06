@@ -1,16 +1,24 @@
 import { uniq } from "https://cdn.skypack.dev/ramda?dts";
 
-export function part1(input: string): number {
-  let markerPosition: number | null = null;
-  for (let i = 3; i < input.length; i++) {
-    const lastFourReceived = input.slice(i - 3, i + 1).split("");
-    if (uniq(lastFourReceived).length === 4) {
-      markerPosition = i;
+function findUniqueSeq(input: string, length: number): number {
+  let startOfPacket: number | null = null;
+  for (let i = (length - 1); i < input.length; i++) {
+    const candidateSeq = input.slice(i - (length - 1), i + 1).split("");
+    if (uniq(candidateSeq).length === length) {
+      startOfPacket = i;
       break;
     }
   }
-  if (markerPosition === null) {
+  if (startOfPacket === null) {
     throw "Not found";
   }
-  return markerPosition + 1;
+  return startOfPacket;
+}
+
+export function part1(input: string): number {
+  return findUniqueSeq(input, 4) + 1;
+}
+
+export function part2(input: string): number {
+  return findUniqueSeq(input, 14) + 1;
 }
