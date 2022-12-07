@@ -1,4 +1,4 @@
-import { intersection, range } from "https://cdn.skypack.dev/ramda?dts";
+import { intersection, range } from "https://cdn.skypack.dev/remeda?dts";
 
 // not using tuples for two elves or start/end range pair because I don't know how to map over them without type error
 type SectorStartOrFinish = number;

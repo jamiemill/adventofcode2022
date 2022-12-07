@@ -1,4 +1,4 @@
-import { clone } from "https://cdn.skypack.dev/ramda?dts";
+import { clone } from "https://cdn.skypack.dev/remeda?dts";
 
 export type Yard = { stacks: Array<Stack> };
 type Stack = { crates: Array<Crate> };

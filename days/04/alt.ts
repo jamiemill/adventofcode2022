@@ -1,4 +1,4 @@
-import { intersection, range } from "https://cdn.skypack.dev/ramda?dts";
+import { intersection, range } from "https://cdn.skypack.dev/remeda?dts";
 
 type Elf = {
   startSector: number;

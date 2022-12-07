@@ -1,4 +1,4 @@
-import { flatten, last, sum } from "https://cdn.skypack.dev/ramda?dts";
+import { flatten, last, sumBy } from "https://cdn.skypack.dev/remeda?dts";
 
 type Dir = {
   name: string;
@@ -59,8 +59,8 @@ function buildTree(input: string): Dir {
 }
 
 function sizeOf(dir: Dir): number {
-  const sizeThisLevel = sum(dir.files.map((f) => f.size));
-  const sizeChildLevels = sum(dir.subdirs.map(sizeOf));
+  const sizeThisLevel = sumBy(dir.files, (f) => f.size);
+  const sizeChildLevels = sumBy(dir.subdirs, sizeOf);
   return sizeThisLevel + sizeChildLevels;
 }
 
@@ -80,7 +80,7 @@ function parseInput(input: string): Dir {
 export function part1(input: string): number {
   const root = parseInput(input);
   const smallOnes = findDirectoriesSmallerThan(root, 100000);
-  return sum(smallOnes.map((dir) => sizeOf(dir)));
+  return sumBy(smallOnes, sizeOf);
 }
 
 const bySize = (a: Dir, b: Dir) => sizeOf(a) - sizeOf(b);

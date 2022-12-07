@@ -1,4 +1,4 @@
-import { uniq } from "https://cdn.skypack.dev/ramda?dts";
+import { uniq } from "https://cdn.skypack.dev/remeda?dts";
 
 function findUniqueSeq(input: string, length: number): number {
   let endOfSeq: number | null = null;
