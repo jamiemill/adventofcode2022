@@ -61,7 +61,7 @@ function buildTree(input: string): Dir {
 function sizeOf(dir: Dir): number {
   const sizeThisLevel = sum(dir.files.map((f) => f.size));
   const sizeChildLevels = sum(dir.subdirs.map(sizeOf));
-  return sum([sizeThisLevel, sizeChildLevels]);
+  return sizeThisLevel + sizeChildLevels;
 }
 
 function listAllDirs(dir: Dir): Dir[] {
