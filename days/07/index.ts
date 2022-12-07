@@ -1,4 +1,4 @@
-import { flatten, sum } from "https://cdn.skypack.dev/ramda?dts";
+import { flatten, last, sum } from "https://cdn.skypack.dev/ramda?dts";
 
 type Dir = {
   name: string;
@@ -7,56 +7,60 @@ type Dir = {
 };
 type File = { name: string; size: number };
 
+const IS_CMD = /^\$ /;
+const IS_DIR = /^dir /;
 const IS_FILE = /^\d+ /;
 
 // should I build a tree of dirs or a flat list of paths - what will be easiest?
 // assuming that they didn't execute `ls` more than once, or change to the same dir more than once.
 
 function buildTree(input: string): Dir {
-  const lines = input.split("\n");
   const root: Dir = { name: "/", files: [], subdirs: [] };
-  let currentLocation = [root];
+  let currentPath = [root];
+
+  const lines = input.split("\n");
   lines.forEach((line) => {
-    const [first, second] = line.split(" ");
-    if (first === "$") {
+    if (line.match(IS_CMD)) {
       const [_prompt, cmd, arg] = line.split(" ");
       if (cmd === "ls") {
         // nothing to do - the next lines can be identified other ways
       } else if (cmd === "cd") {
         if (arg === "..") {
-          currentLocation.pop();
+          currentPath.pop();
         } else if (arg === "/") {
-          currentLocation = [root];
+          currentPath = [root];
         } else {
-          const subDir = currentLocation[currentLocation.length - 1].subdirs
-            .find((
-              d,
-            ) => d.name === arg);
+          const subDir = last(currentPath)?.subdirs
+            .find((d) => d.name === arg);
           if (!subDir) throw `Subdir ${arg} not found`;
-          currentLocation.push(subDir);
+          currentPath.push(subDir);
         }
       } else {
         throw `unrecognised cmd ${cmd}`;
       }
-    } else if (first === "dir") {
-      currentLocation[currentLocation.length - 1].subdirs.push({
-        name: second,
+    } else if (line.match(IS_DIR)) {
+      const [_prefix, name] = line.split(" ");
+      last(currentPath)?.subdirs.push({
+        name,
         files: [],
         subdirs: [],
       });
     } else if (line.match(IS_FILE)) {
-      currentLocation[currentLocation.length - 1].files.push({
-        name: second,
-        size: parseInt(first),
+      const [size, name] = line.split(" ");
+      last(currentPath)?.files.push({
+        name,
+        size: parseInt(size),
       });
+    } else {
+      throw `Unrecognised line ${line}`;
     }
   });
   return root;
 }
 
-function calculateSize(dir: Dir): number {
+function sizeOf(dir: Dir): number {
   const sizeThisLevel = sum(dir.files.map((f) => f.size));
-  const sizeChildLevels = sum(dir.subdirs.map(calculateSize));
+  const sizeChildLevels = sum(dir.subdirs.map(sizeOf));
   return sum([sizeThisLevel, sizeChildLevels]);
 }
 
@@ -66,7 +70,7 @@ function listAllDirs(dir: Dir): Dir[] {
 
 function findDirectoriesSmallerThan(dir: Dir, size: number): Dir[] {
   return listAllDirs(dir)
-    .filter((d) => calculateSize(d) < size);
+    .filter((d) => sizeOf(d) < size);
 }
 
 function parseInput(input: string): Dir {
@@ -76,22 +80,24 @@ function parseInput(input: string): Dir {
 export function part1(input: string): number {
   const root = parseInput(input);
   const smallOnes = findDirectoriesSmallerThan(root, 100000);
-  return sum(smallOnes.map((dir) => calculateSize(dir)));
+  return sum(smallOnes.map((dir) => sizeOf(dir)));
 }
+
+const bySize = (a: Dir, b: Dir) => sizeOf(a) - sizeOf(b);
 
 function findSmallestToFreeUp(dir: Dir, needToDelete: number): Dir {
   return listAllDirs(dir)
-    .filter((d) => calculateSize(d) > needToDelete)
-    .sort((a, b) => calculateSize(a) - calculateSize(b))[0];
+    .filter((d) => sizeOf(d) > needToDelete)
+    .sort(bySize)[0];
 }
 
 export function part2(input: string): number {
   const root = parseInput(input);
-  const totalUsed = calculateSize(root);
+  const totalUsed = sizeOf(root);
   const diskSize = 70000000;
   const spaceNeeded = 30000000;
   const freeSpace = diskSize - totalUsed;
   const needToDelete = spaceNeeded - freeSpace;
   const dirToDelete = findSmallestToFreeUp(root, needToDelete);
-  return calculateSize(dirToDelete);
+  return sizeOf(dirToDelete);
 }
