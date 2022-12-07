@@ -18,7 +18,7 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2`;
 
-Deno.test("Day 4 Part 1", async (t) => {
+Deno.test("Day 5 Part 1", async (t) => {
   await t.step("parse start state", () => {
     const startState = testDataFromExample.split("\n\n")[0];
     const expected: Yard = {
@@ -54,7 +54,7 @@ Deno.test("Day 4 Part 1", async (t) => {
   });
 });
 
-Deno.test("Day 4 Part 2", async (t) => {
+Deno.test("Day 5 Part 2", async (t) => {
   await t.step("example", () => {
     assertEquals(part2(testDataFromExample), "MCD");
   });
