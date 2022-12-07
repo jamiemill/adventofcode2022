@@ -1,4 +1,4 @@
-import { flatten, prop, sortBy, sum } from "https://cdn.skypack.dev/ramda?dts";
+import { flatten, sum } from "https://cdn.skypack.dev/ramda?dts";
 
 type Dir = {
   name: string;
@@ -60,15 +60,13 @@ function calculateSize(dir: Dir): number {
   return sum([sizeThisLevel, sizeChildLevels]);
 }
 
+function listAllDirs(dir: Dir): Dir[] {
+  return [dir].concat(flatten(dir.subdirs.map(listAllDirs)));
+}
+
 function findDirectoriesSmallerThan(dir: Dir, size: number): Dir[] {
-  const result: Dir[] = [];
-  if (calculateSize(dir) < size) {
-    result.push(dir);
-  }
-  const foundInChildren = flatten(
-    dir.subdirs.map((dir) => findDirectoriesSmallerThan(dir, size)),
-  );
-  return result.concat(foundInChildren);
+  return listAllDirs(dir)
+    .filter((d) => calculateSize(d) < size);
 }
 
 function parseInput(input: string): Dir {
@@ -81,19 +79,10 @@ export function part1(input: string): number {
   return sum(smallOnes.map((dir) => calculateSize(dir)));
 }
 
-function listAllDirs(dir: Dir): Dir[] {
-  return [dir].concat(flatten(dir.subdirs.map(listAllDirs)));
-}
-
 function findSmallestToFreeUp(dir: Dir, needToDelete: number): Dir {
-  const dirList: Dir[] = listAllDirs(dir);
-  const dirsWithSizes = dirList.map((d) => ({
-    dir: d,
-    size: calculateSize(d),
-  }));
-  const bigEnough = dirsWithSizes.filter((d) => d.size > needToDelete);
-  const smallest = sortBy(prop("size"), bigEnough);
-  return smallest[0].dir;
+  return listAllDirs(dir)
+    .filter((d) => calculateSize(d) > needToDelete)
+    .sort((a, b) => calculateSize(a) - calculateSize(b))[0];
 }
 
 export function part2(input: string): number {
