@@ -2,7 +2,6 @@ import { flatten, prop, sortBy, sum } from "https://cdn.skypack.dev/ramda?dts";
 
 type Dir = {
   name: string;
-  size?: number;
   files: File[];
   subdirs: Dir[];
 };
