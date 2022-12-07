@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import { part1 } from "./index.ts";
+import { part1, part2 } from "./index.ts";
 
 const testDataFromExample = `$ cd /
 $ ls
@@ -32,17 +32,17 @@ Deno.test("Day 7 Part 1", async (t) => {
 
   await t.step("answer", async () => {
     const input = await Deno.readTextFile(`./days/07/input.txt`);
-    assertEquals(part1(input), 0);
+    assertEquals(part1(input), 1325919);
   });
 });
 
-// Deno.test("Day 7 Part 2", async (t) => {
-//   await t.step("example", () => {
-//     assertEquals(part2(testDataFromExample), 19);
-//   });
+Deno.test("Day 7 Part 2", async (t) => {
+  await t.step("example", () => {
+    assertEquals(part2(testDataFromExample), 24933642);
+  });
 
-//   await t.step("answer", async () => {
-//     const input = await Deno.readTextFile(`./days/06/input.txt`);
-//     assertEquals(part2(input), 3534);
-//   });
-// });
+  await t.step("answer", async () => {
+    const input = await Deno.readTextFile(`./days/07/input.txt`);
+    assertEquals(part2(input), 2050735);
+  });
+});

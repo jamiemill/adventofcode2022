@@ -1,4 +1,4 @@
-import { flatten, map, sum, uniq } from "https://cdn.skypack.dev/ramda?dts";
+import { flatten, prop, sortBy, sum } from "https://cdn.skypack.dev/ramda?dts";
 
 type Dir = {
   name: string;
@@ -78,12 +78,32 @@ function parseInput(input: string): Dir {
 
 export function part1(input: string): number {
   const root = parseInput(input);
-
   const smallOnes = findDirectoriesSmallerThan(root, 100000);
-
   return sum(smallOnes.map((dir) => calculateSize(dir)));
 }
 
-// export function part2(input: string): number {
-//   return findUniqueSeq(input, 14) + 1;
-// }
+function listAllDirs(dir: Dir): Dir[] {
+  return [dir].concat(flatten(dir.subdirs.map(listAllDirs)));
+}
+
+function findSmallestToFreeUp(dir: Dir, needToDelete: number): Dir {
+  const dirList: Dir[] = listAllDirs(dir);
+  const dirsWithSizes = dirList.map((d) => ({
+    dir: d,
+    size: calculateSize(d),
+  }));
+  const bigEnough = dirsWithSizes.filter((d) => d.size > needToDelete);
+  const smallest = sortBy(prop("size"), bigEnough);
+  return smallest[0].dir;
+}
+
+export function part2(input: string): number {
+  const root = parseInput(input);
+  const totalUsed = calculateSize(root);
+  const diskSize = 70000000;
+  const spaceNeeded = 30000000;
+  const freeSpace = diskSize - totalUsed;
+  const needToDelete = spaceNeeded - freeSpace;
+  const dirToDelete = findSmallestToFreeUp(root, needToDelete);
+  return calculateSize(dirToDelete);
+}
