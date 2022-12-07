@@ -1,60 +1,87 @@
-import { uniq } from "https://cdn.skypack.dev/ramda?dts";
+import { flatten, map, sum, uniq } from "https://cdn.skypack.dev/ramda?dts";
 
 type Dir = {
   name: string;
   size?: number;
   files: File[];
   subdirs: Dir[];
-  parent: null | Dir;
 };
 type File = { name: string; size: number };
 
-const IS_FILE = /$\d+ /;
+const IS_FILE = /^\d+ /;
 
-function parseInput(input: string): Dir {
+// should I build a tree of dirs or a flat list of paths - what will be easiest?
+// assuming that they didn't execute `ls` more than once, or change to the same dir more than once.
+
+function buildTree(input: string): Dir {
   const lines = input.split("\n");
-  const root: Dir = { name: "", files: [], subdirs: [], parent: null };
-  let currentLocation = root;
+  const root: Dir = { name: "/", files: [], subdirs: [] };
+  let currentLocation = [root];
   lines.forEach((line) => {
     const [first, second] = line.split(" ");
     if (first === "$") {
       const [_prompt, cmd, arg] = line.split(" ");
       if (cmd === "ls") {
-        // nothing to do
+        // nothing to do - the next lines can be identified other ways
       } else if (cmd === "cd") {
         if (arg === "..") {
-          if (currentLocation.parent === null) throw "cannot go higher";
-          currentLocation = currentLocation.parent;
+          currentLocation.pop();
         } else if (arg === "/") {
-          currentLocation = root;
+          currentLocation = [root];
         } else {
-          const subDir = currentLocation.subdirs.find((d) => d.name === arg);
+          const subDir = currentLocation[currentLocation.length - 1].subdirs
+            .find((
+              d,
+            ) => d.name === arg);
           if (!subDir) throw `Subdir ${arg} not found`;
-          currentLocation = subDir;
+          currentLocation.push(subDir);
         }
       } else {
         throw `unrecognised cmd ${cmd}`;
       }
     } else if (first === "dir") {
-      // dir row
-      currentLocation.subdirs.push({
+      currentLocation[currentLocation.length - 1].subdirs.push({
         name: second,
         files: [],
         subdirs: [],
-        parent: currentLocation,
       });
-    } else if (first.match(IS_FILE)) {
-      // file row
-      currentLocation.files.push({ name: second, size: parseInt(first) });
+    } else if (line.match(IS_FILE)) {
+      currentLocation[currentLocation.length - 1].files.push({
+        name: second,
+        size: parseInt(first),
+      });
     }
   });
   return root;
 }
 
-export function part1(input: string): number {
-  console.log(parseInput(input));
+function calculateSize(dir: Dir): number {
+  const sizeThisLevel = sum(dir.files.map((f) => f.size));
+  const sizeChildLevels = sum(dir.subdirs.map(calculateSize));
+  return sum([sizeThisLevel, sizeChildLevels]);
+}
 
-  return 0;
+function findDirectoriesSmallerThan(dir: Dir, size: number): Dir[] {
+  const result: Dir[] = [];
+  if (calculateSize(dir) < size) {
+    result.push(dir);
+  }
+  const foundInChildren = flatten(
+    dir.subdirs.map((dir) => findDirectoriesSmallerThan(dir, size)),
+  );
+  return result.concat(foundInChildren);
+}
+
+function parseInput(input: string): Dir {
+  return buildTree(input);
+}
+
+export function part1(input: string): number {
+  const root = parseInput(input);
+
+  const smallOnes = findDirectoriesSmallerThan(root, 100000);
+
+  return sum(smallOnes.map((dir) => calculateSize(dir)));
 }
 
 // export function part2(input: string): number {

@@ -27,13 +27,13 @@ $ ls
 
 Deno.test("Day 7 Part 1", async (t) => {
   await t.step("example", () => {
-    assertEquals(part1(testDataFromExample), 0);
+    assertEquals(part1(testDataFromExample), 95437);
   });
 
-  // await t.step("answer", async () => {
-  //   const input = await Deno.readTextFile(`./days/06/input.txt`);
-  //   assertEquals(part1(input), 1093);
-  // });
+  await t.step("answer", async () => {
+    const input = await Deno.readTextFile(`./days/07/input.txt`);
+    assertEquals(part1(input), 0);
+  });
 });
 
 // Deno.test("Day 7 Part 2", async (t) => {
