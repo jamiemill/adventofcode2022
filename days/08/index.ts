@@ -1,3 +1,5 @@
+import { flatten } from "https://cdn.skypack.dev/remeda?dts";
+
 type TreeHeight = number;
 type Row = TreeHeight[];
 type Grid = Row[];
@@ -13,7 +15,7 @@ function beforeAndAfter<T>(
   return [list.slice(0, index), list.slice(index + 1)];
 }
 
-function isVisible(grid: Grid, x: number, y: number): boolean {
+function isVisibleFromOutside(grid: Grid, x: number, y: number): boolean {
   const thisTreeHeight = grid[y][x];
 
   const width = grid[0].length;
@@ -35,15 +37,34 @@ function isVisible(grid: Grid, x: number, y: number): boolean {
 
 export function part1(input: string): number {
   const grid = parseInput(input);
-  let visibleCount = 0;
+  let visibleFromOutsideCount = 0;
   const width = grid[0].length;
   const height = grid.length;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (isVisible(grid, x, y)) {
-        visibleCount++;
+      if (isVisibleFromOutside(grid, x, y)) {
+        visibleFromOutsideCount++;
       }
     }
   }
-  return visibleCount;
+  return visibleFromOutsideCount;
 }
+
+// function calculateViewScore(grid: Grid, x: number, y: number): number {
+// }
+
+// export function part2(input: string): number {
+//   const grid = parseInput(input);
+//   let bestScore = 0;
+//   const width = grid[0].length;
+//   const height = grid.length;
+//   for (let y = 0; y < height; y++) {
+//     for (let x = 0; x < width; x++) {
+//       const score = calculateViewScore(grid, x, y);
+//       if (score > bestScore) {
+//         bestScore = score;
+//       }
+//     }
+//   }
+//   return bestScore;
+// }
