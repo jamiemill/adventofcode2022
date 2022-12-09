@@ -6,7 +6,7 @@ export type Instruction = {
   dist: number;
 };
 
-export type Coord = [number, number];
+export type Coord = { x: number; y: number };
 export type Board = {
   head: Coord;
   tail: Coord;
@@ -33,10 +33,10 @@ function parseInput(input: string): Instruction[] {
 }
 
 function coordinateDelta(head: Coord, tail: Coord): Coord {
-  return [
-    head[0] - tail[0],
-    head[1] - tail[1],
-  ];
+  return {
+    x: head.x - tail.x,
+    y: head.y - tail.y,
+  };
 }
 
 function explodeInstruction(instruction: Instruction): Direction[] {
@@ -54,43 +54,43 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
 export function step(board: Board, direction: Direction): Board {
   const newBoard = clone(board);
   const newHeadPos = newBoard.head;
-  if (direction === "L") newHeadPos[0]--;
-  if (direction === "R") newHeadPos[0]++;
-  if (direction === "D") newHeadPos[1]--;
-  if (direction === "U") newHeadPos[1]++;
+  if (direction === "L") newHeadPos.x--;
+  if (direction === "R") newHeadPos.x++;
+  if (direction === "D") newHeadPos.y--;
+  if (direction === "U") newHeadPos.y++;
 
   const newTailPos = newBoard.tail;
   const gap = coordinateDelta(newHeadPos, newTailPos);
 
   if (direction === "R") {
-    if (gap[0] > 1) {
-      newTailPos[0] += 1;
-      if (gap[1] !== 0) {
-        newTailPos[1] = newHeadPos[1];
+    if (gap.x > 1) {
+      newTailPos.x += 1;
+      if (gap.y !== 0) {
+        newTailPos.y = newHeadPos.y;
       }
     }
   }
   if (direction === "L") {
-    if (gap[0] < -1) {
-      newTailPos[0] -= 1;
-      if (gap[1] !== 0) {
-        newTailPos[1] = newHeadPos[1];
+    if (gap.x < -1) {
+      newTailPos.x -= 1;
+      if (gap.y !== 0) {
+        newTailPos.y = newHeadPos.y;
       }
     }
   }
   if (direction === "U") {
-    if (gap[1] > 1) {
-      newTailPos[1] += 1;
-      if (gap[0] !== 0) {
-        newTailPos[0] = newHeadPos[0];
+    if (gap.y > 1) {
+      newTailPos.y += 1;
+      if (gap.x !== 0) {
+        newTailPos.x = newHeadPos.x;
       }
     }
   }
   if (direction === "D") {
-    if (gap[1] < -1) {
-      newTailPos[1] -= 1;
-      if (gap[0] !== 0) {
-        newTailPos[0] = newHeadPos[0];
+    if (gap.y < -1) {
+      newTailPos.y -= 1;
+      if (gap.x !== 0) {
+        newTailPos.x = newHeadPos.x;
       }
     }
   }
@@ -98,16 +98,16 @@ export function step(board: Board, direction: Direction): Board {
 }
 
 export function part1(input: string): number {
-  let board: Board = { head: [0, 0], tail: [0, 0] };
+  let board: Board = { head: { x: 0, y: 0 }, tail: { x: 0, y: 0 } };
   const tailHistory: Set<string> = new Set();
-  tailHistory.add(`${board.tail[0]},${board.tail[1]}`);
+  tailHistory.add(`${board.tail.x},${board.tail.y}`);
 
   const instructions = parseInput(input);
   const steps = instructionsToSteps(instructions);
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
-    tailHistory.add(`${board.tail[0]},${board.tail[1]}`);
+    tailHistory.add(`${board.tail.x},${board.tail.y}`);
   });
 
   return tailHistory.size;
