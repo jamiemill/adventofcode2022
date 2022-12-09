@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import { Board, Direction, Instruction, part1, step } from "./index.ts";
+import { Board, Direction, part1, part2, step } from "./index.ts";
 
 const testDataFromExample = `R 4
 U 4
@@ -49,18 +49,22 @@ Deno.test("Day 9 Part 1", async (t) => {
   });
 });
 
-// Deno.test("Day 9 Part 2", async (t) => {
-//   await t.step("calcaulteViewScore", () => {
-//     const grid = parseInput(testDataFromExample);
-//     const result = calculateViewScore(grid, 2, 1);
-//     assertEquals(result, 4);
-//   });
-//   await t.step("example", () => {
-//     assertEquals(part2(testDataFromExample), 0);
-//   });
+const testDataFromExamplePart2 = `R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`;
 
-//   await t.step("answer", async () => {
-//     const input = await Deno.readTextFile(`./days/09/input.txt`);
-//     assertEquals(part2(input), 0);
-//   });
-// });
+Deno.test("Day 9 Part 2", async (t) => {
+  // await t.step("example", () => {
+  //   assertEquals(part2(testDataFromExamplePart2), 36);
+  // });
+
+  // await t.step("answer", async () => {
+  //   const input = await Deno.readTextFile(`./days/09/input.txt`);
+  //   assertEquals(part2(input), 0);
+  // });
+});

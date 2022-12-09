@@ -1,4 +1,4 @@
-import { clone } from "https://cdn.skypack.dev/remeda?dts";
+import { clone, last, range } from "https://cdn.skypack.dev/remeda?dts";
 
 export type Direction = "R" | "U" | "D" | "L";
 export type Instruction = {
@@ -65,44 +65,54 @@ const vectors = {
   "R": { x: 1, y: 0 },
 };
 
-export function step(board: Board, direction: Direction): Board {
-  const b = clone(board);
-  b.head = addCoords(b.head, vectors[direction]);
-
-  const gap = subtractCoords(b.head, b.tail);
+function updateFollower(
+  leader: Coord,
+  follower: Coord,
+  direction: Direction,
+): Coord {
+  const f = clone(follower);
+  const gap = subtractCoords(leader, follower);
 
   if (direction === "R") {
     if (gap.x > 1) {
-      b.tail.x += 1;
+      f.x += 1;
       if (gap.y !== 0) {
-        b.tail.y = b.head.y;
+        f.y = leader.y;
       }
     }
   }
   if (direction === "L") {
     if (gap.x < -1) {
-      b.tail.x -= 1;
+      f.x -= 1;
       if (gap.y !== 0) {
-        b.tail.y = b.head.y;
+        f.y = leader.y;
       }
     }
   }
   if (direction === "U") {
     if (gap.y > 1) {
-      b.tail.y += 1;
+      f.y += 1;
       if (gap.x !== 0) {
-        b.tail.x = b.head.x;
+        f.x = leader.x;
       }
     }
   }
   if (direction === "D") {
     if (gap.y < -1) {
-      b.tail.y -= 1;
+      f.y -= 1;
       if (gap.x !== 0) {
-        b.tail.x = b.head.x;
+        f.x = leader.x;
       }
     }
   }
+
+  return f;
+}
+
+export function step(board: Board, direction: Direction): Board {
+  const b = clone(board);
+  b.head = addCoords(b.head, vectors[direction]);
+  b.tail = updateFollower(b.head, b.tail, direction);
   return b;
 }
 
@@ -118,6 +128,30 @@ export function part1(input: string): number {
     board = step(board, instruction);
     tailHistory.add(`${board.tail.x},${board.tail.y}`);
   });
+
+  return tailHistory.size;
+}
+
+export type Board2 = {
+  head: Coord;
+  rest: Coord[]; // should be 9 entries here
+};
+
+export function part2(input: string): number {
+  let board: Board2 = {
+    head: { x: 0, y: 0 },
+    rest: range(0, 9).map(() => ({ x: 0, y: 0 })),
+  };
+  const tailHistory: Set<string> = new Set();
+  tailHistory.add(`${last(board.rest)?.x},${last(board.rest)?.y}`);
+
+  const instructions = parseInput(input);
+  const steps = instructionsToSteps(instructions);
+
+  // steps.forEach((instruction) => {
+  //   board = step(board, instruction);
+  //   tailHistory.add(`${last(board.rest)?.x},${last(board.rest)?.y}`);
+  // });
 
   return tailHistory.size;
 }
