@@ -32,10 +32,17 @@ function parseInput(input: string): Instruction[] {
   });
 }
 
-function coordinateDelta(head: Coord, tail: Coord): Coord {
+function subtractCoords(left: Coord, right: Coord): Coord {
   return {
-    x: head.x - tail.x,
-    y: head.y - tail.y,
+    x: left.x - right.x,
+    y: left.y - right.y,
+  };
+}
+
+function addCoords(left: Coord, right: Coord): Coord {
+  return {
+    x: left.x + right.x,
+    y: left.y + right.y,
   };
 }
 
@@ -51,50 +58,52 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
   return instructions.map(explodeInstruction).flat();
 }
 
-export function step(board: Board, direction: Direction): Board {
-  const newBoard = clone(board);
-  const newHeadPos = newBoard.head;
-  if (direction === "L") newHeadPos.x--;
-  if (direction === "R") newHeadPos.x++;
-  if (direction === "D") newHeadPos.y--;
-  if (direction === "U") newHeadPos.y++;
+const vectors = {
+  "U": { x: 0, y: 1 },
+  "D": { x: 0, y: -1 },
+  "L": { x: -1, y: 0 },
+  "R": { x: 1, y: 0 },
+};
 
-  const newTailPos = newBoard.tail;
-  const gap = coordinateDelta(newHeadPos, newTailPos);
+export function step(board: Board, direction: Direction): Board {
+  const b = clone(board);
+  b.head = addCoords(b.head, vectors[direction]);
+
+  const gap = subtractCoords(b.head, b.tail);
 
   if (direction === "R") {
     if (gap.x > 1) {
-      newTailPos.x += 1;
+      b.tail.x += 1;
       if (gap.y !== 0) {
-        newTailPos.y = newHeadPos.y;
+        b.tail.y = b.head.y;
       }
     }
   }
   if (direction === "L") {
     if (gap.x < -1) {
-      newTailPos.x -= 1;
+      b.tail.x -= 1;
       if (gap.y !== 0) {
-        newTailPos.y = newHeadPos.y;
+        b.tail.y = b.head.y;
       }
     }
   }
   if (direction === "U") {
     if (gap.y > 1) {
-      newTailPos.y += 1;
+      b.tail.y += 1;
       if (gap.x !== 0) {
-        newTailPos.x = newHeadPos.x;
+        b.tail.x = b.head.x;
       }
     }
   }
   if (direction === "D") {
     if (gap.y < -1) {
-      newTailPos.y -= 1;
+      b.tail.y -= 1;
       if (gap.x !== 0) {
-        newTailPos.x = newHeadPos.x;
+        b.tail.x = b.head.x;
       }
     }
   }
-  return newBoard;
+  return b;
 }
 
 export function part1(input: string): number {
