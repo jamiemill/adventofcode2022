@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import { Board, Direction, Instruction, move, part1, step } from "./index.ts";
+import { Board, Direction, Instruction, part1, step } from "./index.ts";
 
 const testDataFromExample = `R 4
 U 4
@@ -50,10 +50,10 @@ Deno.test("Day 9 Part 1", async (t) => {
     assertEquals(part1(testDataFromExample), 13);
   });
 
-  // await t.step("answer", async () => {
-  //   const input = await Deno.readTextFile(`./days/09/input.txt`);
-  //   assertEquals(part1(input), 0);
-  // });
+  await t.step("answer", async () => {
+    const input = await Deno.readTextFile(`./days/09/input.txt`);
+    assertEquals(part1(input), 0);
+  });
 });
 
 // Deno.test("Day 9 Part 2", async (t) => {
