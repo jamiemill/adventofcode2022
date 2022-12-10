@@ -6,10 +6,10 @@ export type Instruction = {
   dist: number;
 };
 
-export type Coord = { x: number; y: number };
+export type Vector = { x: number; y: number };
 export type Board = {
-  head: Coord;
-  tail: Coord;
+  head: Vector;
+  tail: Vector;
 };
 
 function parseInput(input: string): Instruction[] {
@@ -32,14 +32,14 @@ function parseInput(input: string): Instruction[] {
   });
 }
 
-function subtractCoords(left: Coord, right: Coord): Coord {
+function subtractVectors(left: Vector, right: Vector): Vector {
   return {
     x: left.x - right.x,
     y: left.y - right.y,
   };
 }
 
-function addCoords(left: Coord, right: Coord): Coord {
+function addVectors(left: Vector, right: Vector): Vector {
   return {
     x: left.x + right.x,
     y: left.y + right.y,
@@ -66,20 +66,20 @@ const vectors = {
 };
 
 function updateFollower(
-  leader: Coord,
-  follower: Coord,
-  lastMoveOfLeader: Coord,
-): Coord {
+  leader: Vector,
+  follower: Vector,
+  lastMoveOfLeader: Vector,
+): Vector {
   let newFollower = clone(follower);
-  const gap = subtractCoords(leader, follower);
+  const gap = subtractVectors(leader, follower);
   if (Math.abs(gap.x) > 1 || Math.abs(gap.y) > 1) {
-    const followerMove = subtractCoords(gap, lastMoveOfLeader);
-    newFollower = addCoords(newFollower, followerMove);
+    const followerMove = subtractVectors(gap, lastMoveOfLeader);
+    newFollower = addVectors(newFollower, followerMove);
   }
   return newFollower;
 }
 
-function drawCoords(coords: Coord): string {
+function drawCoords(coords: Vector): string {
   return `${coords.x},${coords.y}`;
 }
 function drawBoard(board: Board): string {
@@ -89,7 +89,7 @@ function drawBoard(board: Board): string {
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
   // console.log(`-> head move: ${direction}}`);
-  b.head = addCoords(b.head, vectors[direction]);
+  b.head = addVectors(b.head, vectors[direction]);
   b.tail = updateFollower(b.head, b.tail, vectors[direction]);
   return b;
 }
@@ -113,13 +113,13 @@ export function part1(input: string): number {
 }
 
 export type Board2 = {
-  head: Coord;
-  followers: Coord[];
+  head: Vector;
+  followers: Vector[];
 };
 
 export function step2(board: Board2, direction: Direction): Board2 {
   const b = clone(board);
-  b.head = addCoords(b.head, vectors[direction]);
+  b.head = addVectors(b.head, vectors[direction]);
   for (let i = 0; i < b.followers.length; i++) {
     const leader = i === 0 ? b.head : b.followers[i - 1];
     b.followers[i] = updateFollower(leader, b.followers[i], vectors[direction]);

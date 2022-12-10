@@ -66,9 +66,9 @@ Deno.test("Day 9 Part 2", async (t) => {
   //   assertEquals(step(startState, direction), finishState);
   // });
 
-  // await t.step("example", () => {
-  //   assertEquals(part2(testDataFromExamplePart2), 36);
-  // });
+  await t.step("example", () => {
+    assertEquals(part2(testDataFromExamplePart2), 36);
+  });
 
   // await t.step("answer", async () => {
   //   const input = await Deno.readTextFile(`./days/09/input.txt`);
