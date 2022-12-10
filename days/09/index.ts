@@ -1,4 +1,5 @@
 import { clone, last, range } from "https://cdn.skypack.dev/remeda?dts";
+import { renderBoard2 } from "./render.ts";
 
 export type Direction = "R" | "U" | "D" | "L";
 export type Instruction = {
@@ -76,45 +77,6 @@ export function getFollowerMove(
   return followerMove;
 }
 
-function drawCoords(coords: Vector): string {
-  return `${coords.x},${coords.y}`;
-}
-function drawBoard(board: Board): string {
-  return `head: ${drawCoords(board.head)} tail: ${drawCoords(board.tail)}`;
-}
-function drawBoard2(board: Board2): string {
-  return `head: ${drawCoords(board.head)} tail: \n${
-    board.followers.map((f) => `* ${drawCoords(f)}`).join("\n")
-  }`;
-}
-
-function renderBoard2(board: Board2): string {
-  const [minX, maxX, minY, maxY] = [-10, 10, -10, 10];
-  let out = "";
-  for (let y = maxY; y >= minY; y--) {
-    for (let x = minX; x <= maxX; x++) {
-      let cell = ".";
-      const headWithIdentity: { id: string; pos: Vector } = {
-        id: "H",
-        pos: board.head,
-      };
-      const followersWithIdentity: { id: string; pos: Vector }[] = board
-        .followers.map((f, i) => ({ id: i.toString(), pos: f }));
-      const inCell = [headWithIdentity].concat(followersWithIdentity).filter(
-        (fi) => fi.pos.x === x && fi.pos.y === y,
-      );
-      if (inCell.length > 1) {
-        cell = "*";
-      } else if (inCell.length === 1) {
-        cell = inCell[0].id;
-      }
-      out += cell;
-    }
-    out += "\n";
-  }
-  return out;
-}
-
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
   const headMove = vectors[direction];
@@ -132,11 +94,9 @@ export function part1(input: string): number {
 
   const instructions = parseInput(input);
   const steps = instructionsToSteps(instructions);
-  console.log(drawBoard(board));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
-    // console.log(drawBoard(board));
     tailHistory.add(`${board.tail.x},${board.tail.y}`);
   });
 
