@@ -59,6 +59,13 @@ L 25
 U 20`;
 
 Deno.test("Day 9 Part 2", async (t) => {
+  // await t.step("a diagonal move should be copied by followers", () => {
+  //   const startState: Board = { head: { x: 1, y: 1 }, tail: { x: 0, y: 0 } };
+  //   const direction: Direction = "U";
+  //   const finishState: Board = { head: { x: 2, y: 2 }, tail: { x: 1, y: 1 } };
+  //   assertEquals(step(startState, direction), finishState);
+  // });
+
   // await t.step("example", () => {
   //   assertEquals(part2(testDataFromExamplePart2), 36);
   // });

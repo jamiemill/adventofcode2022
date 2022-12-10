@@ -68,51 +68,29 @@ const vectors = {
 function updateFollower(
   leader: Coord,
   follower: Coord,
-  direction: Direction,
+  lastMoveOfLeader: Coord,
 ): Coord {
-  const f = clone(follower);
+  let newFollower = clone(follower);
   const gap = subtractCoords(leader, follower);
+  if (Math.abs(gap.x) > 1 || Math.abs(gap.y) > 1) {
+    const followerMove = subtractCoords(gap, lastMoveOfLeader);
+    newFollower = addCoords(newFollower, followerMove);
+  }
+  return newFollower;
+}
 
-  if (direction === "R") {
-    if (gap.x > 1) {
-      f.x += 1;
-      if (gap.y !== 0) {
-        f.y = leader.y;
-      }
-    }
-  }
-  if (direction === "L") {
-    if (gap.x < -1) {
-      f.x -= 1;
-      if (gap.y !== 0) {
-        f.y = leader.y;
-      }
-    }
-  }
-  if (direction === "U") {
-    if (gap.y > 1) {
-      f.y += 1;
-      if (gap.x !== 0) {
-        f.x = leader.x;
-      }
-    }
-  }
-  if (direction === "D") {
-    if (gap.y < -1) {
-      f.y -= 1;
-      if (gap.x !== 0) {
-        f.x = leader.x;
-      }
-    }
-  }
-
-  return f;
+function drawCoords(coords: Coord): string {
+  return `${coords.x},${coords.y}`;
+}
+function drawBoard(board: Board): string {
+  return `head: ${drawCoords(board.head)} tail: ${drawCoords(board.tail)}`;
 }
 
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
+  // console.log(`-> head move: ${direction}}`);
   b.head = addCoords(b.head, vectors[direction]);
-  b.tail = updateFollower(b.head, b.tail, direction);
+  b.tail = updateFollower(b.head, b.tail, vectors[direction]);
   return b;
 }
 
@@ -123,9 +101,11 @@ export function part1(input: string): number {
 
   const instructions = parseInput(input);
   const steps = instructionsToSteps(instructions);
+  console.log(drawBoard(board));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
+    // console.log(drawBoard(board));
     tailHistory.add(`${board.tail.x},${board.tail.y}`);
   });
 
@@ -134,24 +114,34 @@ export function part1(input: string): number {
 
 export type Board2 = {
   head: Coord;
-  rest: Coord[]; // should be 9 entries here
+  followers: Coord[];
 };
+
+export function step2(board: Board2, direction: Direction): Board2 {
+  const b = clone(board);
+  b.head = addCoords(b.head, vectors[direction]);
+  for (let i = 0; i < b.followers.length; i++) {
+    const leader = i === 0 ? b.head : b.followers[i - 1];
+    b.followers[i] = updateFollower(leader, b.followers[i], vectors[direction]);
+  }
+  return b;
+}
 
 export function part2(input: string): number {
   let board: Board2 = {
     head: { x: 0, y: 0 },
-    rest: range(0, 9).map(() => ({ x: 0, y: 0 })),
+    followers: range(0, 9).map(() => ({ x: 0, y: 0 })),
   };
   const tailHistory: Set<string> = new Set();
-  tailHistory.add(`${last(board.rest)?.x},${last(board.rest)?.y}`);
+  tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
 
   const instructions = parseInput(input);
   const steps = instructionsToSteps(instructions);
 
-  // steps.forEach((instruction) => {
-  //   board = step(board, instruction);
-  //   tailHistory.add(`${last(board.rest)?.x},${last(board.rest)?.y}`);
-  // });
+  steps.forEach((instruction) => {
+    board = step2(board, instruction);
+    tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+  });
 
   return tailHistory.size;
 }
