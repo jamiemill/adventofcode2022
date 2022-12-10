@@ -18,42 +18,42 @@ L 5
 R 2`;
 
 Deno.test("Day 9 Part 1", async (t) => {
-  await t.step("step right", () => {
-    const startState: Board = { head: { x: 0, y: 0 }, tail: { x: 0, y: 0 } };
-    const direction: Direction = "R";
-    const finishState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
-    assertEquals(step(startState, direction), finishState);
-  });
+  // await t.step("step right", () => {
+  //   const startState: Board = { head: { x: 0, y: 0 }, tail: { x: 0, y: 0 } };
+  //   const direction: Direction = "R";
+  //   const finishState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
+  //   assertEquals(step(startState, direction), finishState);
+  // });
 
-  await t.step("step right and pull tail", () => {
-    const startState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
-    const direction: Direction = "R";
-    const finishState: Board = { head: { x: 2, y: 0 }, tail: { x: 1, y: 0 } };
-    assertEquals(step(startState, direction), finishState);
-  });
+  // await t.step("step right and pull tail", () => {
+  //   const startState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
+  //   const direction: Direction = "R";
+  //   const finishState: Board = { head: { x: 2, y: 0 }, tail: { x: 1, y: 0 } };
+  //   assertEquals(step(startState, direction), finishState);
+  // });
 
-  await t.step("step up and pull tail", () => {
-    const startState: Board = { head: { x: 0, y: 1 }, tail: { x: 0, y: 0 } };
-    const direction: Direction = "U";
-    const finishState: Board = { head: { x: 0, y: 2 }, tail: { x: 0, y: 1 } };
-    assertEquals(step(startState, direction), finishState);
-  });
+  // await t.step("step up and pull tail", () => {
+  //   const startState: Board = { head: { x: 0, y: 1 }, tail: { x: 0, y: 0 } };
+  //   const direction: Direction = "U";
+  //   const finishState: Board = { head: { x: 0, y: 2 }, tail: { x: 0, y: 1 } };
+  //   assertEquals(step(startState, direction), finishState);
+  // });
 
-  await t.step("pull tail diagonally", () => {
-    const startState: Board = { head: { x: 1, y: 1 }, tail: { x: 0, y: 0 } };
-    const direction: Direction = "U";
-    const finishState: Board = { head: { x: 1, y: 2 }, tail: { x: 1, y: 1 } };
-    assertEquals(step(startState, direction), finishState);
-  });
+  // await t.step("pull tail diagonally", () => {
+  //   const startState: Board = { head: { x: 1, y: 1 }, tail: { x: 0, y: 0 } };
+  //   const direction: Direction = "U";
+  //   const finishState: Board = { head: { x: 1, y: 2 }, tail: { x: 1, y: 1 } };
+  //   assertEquals(step(startState, direction), finishState);
+  // });
 
-  await t.step("example", () => {
-    assertEquals(part1(testDataFromExample), 13);
-  });
+  // await t.step("example", () => {
+  //   assertEquals(part1(testDataFromExample), 13);
+  // });
 
-  await t.step("answer", async () => {
-    const input = await Deno.readTextFile(`./days/09/input.txt`);
-    assertEquals(part1(input), 6642);
-  });
+  // await t.step("answer", async () => {
+  //   const input = await Deno.readTextFile(`./days/09/input.txt`);
+  //   assertEquals(part1(input), 6642);
+  // });
 });
 
 const testDataFromExamplePart2 = `R 5
@@ -66,18 +66,18 @@ L 25
 U 20`;
 
 Deno.test("Day 9 Part 2", async (t) => {
-  await t.step("a diagonal move should be copied by followers", () => {
-    const head = { x: 5, y: 5 };
-    const move = { x: 1, y: 1 }; // diagonal move
-    const newHead = { x: 6, y: 6 };
-    const tail = { x: 4, y: 4 };
-    const expectTail = { x: 5, y: 5 };
-    assertEquals(updateFollower(newHead, tail, move), expectTail);
-  });
-
-  // await t.step("example", () => {
-  //   assertEquals(part2(testDataFromExamplePart2), 36);
+  // await t.step("a diagonal move should be copied by followers", () => {
+  //   const head = { x: 5, y: 5 };
+  //   const move = { x: 1, y: 1 }; // diagonal move
+  //   const newHead = { x: 6, y: 6 };
+  //   const tail = { x: 4, y: 4 };
+  //   const expectTail = { x: 5, y: 5 };
+  //   assertEquals(updateFollower(newHead, tail, move), expectTail);
   // });
+
+  await t.step("example", () => {
+    assertEquals(part2(testDataFromExamplePart2), 36);
+  });
 
   // await t.step("answer", async () => {
   //   const input = await Deno.readTextFile(`./days/09/input.txt`);
