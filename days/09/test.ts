@@ -1,5 +1,12 @@
 import { assertEquals } from "https://deno.land/std@0.165.0/testing/asserts.ts";
-import { Board, Direction, part1, part2, step } from "./index.ts";
+import {
+  Board,
+  Direction,
+  part1,
+  part2,
+  step,
+  updateFollower,
+} from "./index.ts";
 
 const testDataFromExample = `R 4
 U 4
@@ -59,16 +66,18 @@ L 25
 U 20`;
 
 Deno.test("Day 9 Part 2", async (t) => {
-  // await t.step("a diagonal move should be copied by followers", () => {
-  //   const startState: Board = { head: { x: 1, y: 1 }, tail: { x: 0, y: 0 } };
-  //   const direction: Direction = "U";
-  //   const finishState: Board = { head: { x: 2, y: 2 }, tail: { x: 1, y: 1 } };
-  //   assertEquals(step(startState, direction), finishState);
-  // });
-
-  await t.step("example", () => {
-    assertEquals(part2(testDataFromExamplePart2), 36);
+  await t.step("a diagonal move should be copied by followers", () => {
+    const head = { x: 5, y: 5 };
+    const move = { x: 1, y: 1 }; // diagonal move
+    const newHead = { x: 6, y: 6 };
+    const tail = { x: 4, y: 4 };
+    const expectTail = { x: 5, y: 5 };
+    assertEquals(updateFollower(newHead, tail, move), expectTail);
   });
+
+  // await t.step("example", () => {
+  //   assertEquals(part2(testDataFromExamplePart2), 36);
+  // });
 
   // await t.step("answer", async () => {
   //   const input = await Deno.readTextFile(`./days/09/input.txt`);

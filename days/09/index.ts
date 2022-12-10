@@ -6,7 +6,7 @@ export type Instruction = {
   dist: number;
 };
 
-export type Vector = { x: number; y: number };
+export type Vector = Readonly<{ x: number; y: number }>;
 export type Board = {
   head: Vector;
   tail: Vector;
@@ -65,12 +65,12 @@ const vectors = {
   "R": { x: 1, y: 0 },
 };
 
-function updateFollower(
+export function updateFollower(
   leader: Vector,
   follower: Vector,
   lastMoveOfLeader: Vector,
 ): Vector {
-  let newFollower = clone(follower);
+  let newFollower = follower;
   const gap = subtractVectors(leader, follower);
   if (Math.abs(gap.x) > 1 || Math.abs(gap.y) > 1) {
     const followerMove = subtractVectors(gap, lastMoveOfLeader);
@@ -142,6 +142,8 @@ export function part2(input: string): number {
     board = step2(board, instruction);
     tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
   });
+
+  console.log(tailHistory);
 
   return tailHistory.size;
 }
