@@ -63,18 +63,17 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
   return instructions.map(explodeInstruction).flat();
 }
 
-export function updateFollower(
+export function getFollowerMove(
   leader: Vector,
   follower: Vector,
   lastMoveOfLeader: Vector,
 ): Vector {
-  let newFollower = follower;
   const gap = subtractVectors(leader, follower);
+  let followerMove = { x: 0, y: 0 };
   if (Math.abs(gap.x) > 1 || Math.abs(gap.y) > 1) {
-    const followerMove = subtractVectors(gap, lastMoveOfLeader);
-    newFollower = addVectors(newFollower, followerMove);
+    followerMove = subtractVectors(gap, lastMoveOfLeader);
   }
-  return newFollower;
+  return followerMove;
 }
 
 function drawCoords(coords: Vector): string {
@@ -118,9 +117,11 @@ function renderBoard2(board: Board2): string {
 
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
+  const headMove = vectors[direction];
   // console.log(`-> head move: ${direction}}`);
-  b.head = addVectors(b.head, vectors[direction]);
-  b.tail = updateFollower(b.head, b.tail, vectors[direction]);
+  b.head = addVectors(b.head, headMove);
+  const followerMove = getFollowerMove(b.head, b.tail, headMove);
+  b.tail = addVectors(b.tail, followerMove);
   return b;
 }
 
@@ -149,10 +150,17 @@ export type Board2 = {
 
 export function step2(board: Board2, direction: Direction): Board2 {
   const b = clone(board);
-  b.head = addVectors(b.head, vectors[direction]);
+  let leaderMove = vectors[direction];
+  b.head = addVectors(b.head, leaderMove);
   for (let i = 0; i < b.followers.length; i++) {
     const leader = i === 0 ? b.head : b.followers[i - 1];
-    b.followers[i] = updateFollower(leader, b.followers[i], vectors[direction]);
+    const followerMove = getFollowerMove(
+      leader,
+      b.followers[i],
+      leaderMove,
+    );
+    b.followers[i] = addVectors(b.followers[i], followerMove);
+    leaderMove = followerMove;
   }
   return b;
 }
