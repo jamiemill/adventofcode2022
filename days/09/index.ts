@@ -5,18 +5,23 @@ export type Instruction = {
   dir: Direction;
   dist: number;
 };
-
 export type Vector = Readonly<{ x: number; y: number }>;
 export type Board = {
   head: Vector;
   tail: Vector;
+};
+const vectors: { [k in Direction]: Vector } = {
+  "U": { x: 0, y: 1 },
+  "D": { x: 0, y: -1 },
+  "L": { x: -1, y: 0 },
+  "R": { x: 1, y: 0 },
 };
 
 function parseInput(input: string): Instruction[] {
   return input.split("\n").map((line) => {
     const [directionStr, distanceStr] = line.split(" ");
     const dist = parseInt(distanceStr);
-    let dir: null | Direction = null;
+    let dir: Direction | null = null;
     switch (directionStr) {
       case "R":
       case "L":
@@ -57,13 +62,6 @@ function explodeInstruction(instruction: Instruction): Direction[] {
 function instructionsToSteps(instructions: Instruction[]): Direction[] {
   return instructions.map(explodeInstruction).flat();
 }
-
-const vectors = {
-  "U": { x: 0, y: 1 },
-  "D": { x: 0, y: -1 },
-  "L": { x: -1, y: 0 },
-  "R": { x: 1, y: 0 },
-};
 
 export function updateFollower(
   leader: Vector,
