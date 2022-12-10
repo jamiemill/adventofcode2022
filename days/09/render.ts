@@ -23,7 +23,7 @@ export function renderBoard2(board: Board2): string {
         pos: board.head,
       };
       const followersWithIdentity: { id: string; pos: Vector }[] = board
-        .followers.map((f, i) => ({ id: i.toString(), pos: f }));
+        .followers.map((f, i) => ({ id: (i + 1).toString(), pos: f }));
       const inCell = [headWithIdentity].concat(followersWithIdentity).filter(
         (fi) => fi.pos.x === x && fi.pos.y === y,
       );
