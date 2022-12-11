@@ -1,4 +1,4 @@
-import { clone, last, range } from "https://cdn.skypack.dev/remeda?dts";
+import { clone, last, range, times } from "https://cdn.skypack.dev/remeda?dts";
 
 export type Direction = "R" | "U" | "D" | "L";
 export type Instruction = {
@@ -10,7 +10,7 @@ export type Board = {
   followers: Vector[];
 };
 export type Vector = Readonly<{ x: number; y: number }>;
-const vectors: { [k in Direction]: Vector } = {
+const vectors: Record<Direction, Vector> = {
   "U": { x: 0, y: 1 },
   "D": { x: 0, y: -1 },
   "L": { x: -1, y: 0 },
@@ -51,12 +51,8 @@ export function addVectors(left: Vector, right: Vector): Vector {
   };
 }
 
-function explodeInstruction(instruction: Instruction): Direction[] {
-  return range(0, instruction.dist).map(() => instruction.dir);
-}
-
 function instructionsToSteps(instructions: Instruction[]): Direction[] {
-  return instructions.map(explodeInstruction).flat();
+  return instructions.map((inst) => times(inst.dist, () => inst.dir)).flat();
 }
 
 const abs = Math.abs;
