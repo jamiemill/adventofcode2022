@@ -99,16 +99,21 @@ export function step(board: Board, direction: Direction): Board {
   return b;
 }
 
+function tailAsStr(followers: Vector[]): string {
+  const tail = last(followers);
+  return tail?.x + "," + tail?.y;
+}
+
 export function part1(input: string): number {
   let board: Board = { head: { x: 0, y: 0 }, followers: [{ x: 0, y: 0 }] };
   const tailHistory: Set<string> = new Set();
-  tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+  tailHistory.add(tailAsStr(board.followers));
 
   const steps = instructionsToSteps(parseInput(input));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
-    tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+    tailHistory.add(tailAsStr(board.followers));
   });
 
   return tailHistory.size;
@@ -120,13 +125,13 @@ export function part2(input: string): number {
     followers: range(0, 9).map(() => ({ x: 0, y: 0 })),
   };
   const tailHistory: Set<string> = new Set();
-  tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+  tailHistory.add(tailAsStr(board.followers));
 
   const steps = instructionsToSteps(parseInput(input));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
-    tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+    tailHistory.add(tailAsStr(board.followers));
   });
 
   return tailHistory.size;
