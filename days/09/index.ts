@@ -1,5 +1,4 @@
 import { clone, last, range } from "https://cdn.skypack.dev/remeda?dts";
-import { renderBoard2 } from "./render.ts";
 
 export type Direction = "R" | "U" | "D" | "L";
 export type Instruction = {
@@ -64,13 +63,6 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
   return instructions.map(explodeInstruction).flat();
 }
 
-// rules to follow:
-// * if leader is 2 steps directly U,D,L or R must move 1 step in that direction
-// * CHECK: my code does the above even if it's not directly in one direction?
-// * Otherwise, if the leader and follower aren't touching and aren't in the same row or column, the tail always moves one step diagonally to keep up:
-// can the follower always copy the last move of the leader?
-// or only if they are aligned and in tension?
-
 const abs = Math.abs;
 
 function clamp(num: number) {
@@ -80,7 +72,6 @@ function clamp(num: number) {
 export function getFollowerMove(
   leader: Vector,
   follower: Vector,
-  lastMoveOfLeader: Vector,
 ): Vector {
   const gap = subtractVectors(leader, follower);
   let followerMove = { x: 0, y: 0 };
@@ -103,9 +94,8 @@ export function getFollowerMove(
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
   const headMove = vectors[direction];
-  // console.log(`-> head move: ${direction}}`);
   b.head = addVectors(b.head, headMove);
-  const followerMove = getFollowerMove(b.head, b.tail, headMove);
+  const followerMove = getFollowerMove(b.head, b.tail);
   b.tail = addVectors(b.tail, followerMove);
   return b;
 }
@@ -140,7 +130,6 @@ export function step2(board: Board2, direction: Direction): Board2 {
     const followerMove = getFollowerMove(
       leader,
       b.followers[i],
-      leaderMove,
     );
     b.followers[i] = addVectors(b.followers[i], followerMove);
     leaderMove = followerMove;
@@ -155,16 +144,12 @@ export function part2(input: string): number {
   };
   const tailHistory: Set<string> = new Set();
   tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
-  // console.log(drawBoard2(board));
-  console.log(renderBoard2(board));
 
   const instructions = parseInput(input);
   const steps = instructionsToSteps(instructions);
 
   steps.forEach((instruction) => {
     board = step2(board, instruction);
-    // console.log(drawBoard2(board));
-    console.log(renderBoard2(board));
     tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
   });
 
