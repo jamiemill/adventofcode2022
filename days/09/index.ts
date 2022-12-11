@@ -5,11 +5,11 @@ export type Instruction = {
   dir: Direction;
   dist: number;
 };
-export type Vector = Readonly<{ x: number; y: number }>;
 export type Board = {
   head: Vector;
-  tail: Vector;
+  followers: Vector[];
 };
+export type Vector = Readonly<{ x: number; y: number }>;
 const vectors: { [k in Direction]: Vector } = {
   "U": { x: 0, y: 1 },
   "D": { x: 0, y: -1 },
@@ -52,11 +52,7 @@ export function addVectors(left: Vector, right: Vector): Vector {
 }
 
 function explodeInstruction(instruction: Instruction): Direction[] {
-  const steps: Direction[] = [];
-  for (let i = 0; i < instruction.dist; i++) {
-    steps.push(instruction.dir);
-  }
-  return steps;
+  return range(0, instruction.dist).map(() => instruction.dir);
 }
 
 function instructionsToSteps(instructions: Instruction[]): Direction[] {
@@ -93,36 +89,6 @@ export function getFollowerMove(
 
 export function step(board: Board, direction: Direction): Board {
   const b = clone(board);
-  const headMove = vectors[direction];
-  b.head = addVectors(b.head, headMove);
-  const followerMove = getFollowerMove(b.head, b.tail);
-  b.tail = addVectors(b.tail, followerMove);
-  return b;
-}
-
-export function part1(input: string): number {
-  let board: Board = { head: { x: 0, y: 0 }, tail: { x: 0, y: 0 } };
-  const tailHistory: Set<string> = new Set();
-  tailHistory.add(`${board.tail.x},${board.tail.y}`);
-
-  const instructions = parseInput(input);
-  const steps = instructionsToSteps(instructions);
-
-  steps.forEach((instruction) => {
-    board = step(board, instruction);
-    tailHistory.add(`${board.tail.x},${board.tail.y}`);
-  });
-
-  return tailHistory.size;
-}
-
-export type Board2 = {
-  head: Vector;
-  followers: Vector[];
-};
-
-export function step2(board: Board2, direction: Direction): Board2 {
-  const b = clone(board);
   let leaderMove = vectors[direction];
   b.head = addVectors(b.head, leaderMove);
   for (let i = 0; i < b.followers.length; i++) {
@@ -137,8 +103,24 @@ export function step2(board: Board2, direction: Direction): Board2 {
   return b;
 }
 
+export function part1(input: string): number {
+  let board: Board = { head: { x: 0, y: 0 }, followers: [{ x: 0, y: 0 }] };
+  const tailHistory: Set<string> = new Set();
+  tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+
+  const instructions = parseInput(input);
+  const steps = instructionsToSteps(instructions);
+
+  steps.forEach((instruction) => {
+    board = step(board, instruction);
+    tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
+  });
+
+  return tailHistory.size;
+}
+
 export function part2(input: string): number {
-  let board: Board2 = {
+  let board: Board = {
     head: { x: 0, y: 0 },
     followers: range(0, 9).map(() => ({ x: 0, y: 0 })),
   };
@@ -149,11 +131,9 @@ export function part2(input: string): number {
   const steps = instructionsToSteps(instructions);
 
   steps.forEach((instruction) => {
-    board = step2(board, instruction);
+    board = step(board, instruction);
     tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
   });
-
-  // console.log(tailHistory);
 
   return tailHistory.size;
 }

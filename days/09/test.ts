@@ -20,37 +20,67 @@ R 2`;
 
 Deno.test("Day 9 Part 1", async (t) => {
   await t.step("step right", () => {
-    const startState: Board = { head: { x: 0, y: 0 }, tail: { x: 0, y: 0 } };
+    const startState: Board = {
+      head: { x: 0, y: 0 },
+      followers: [{ x: 0, y: 0 }],
+    };
     const direction: Direction = "R";
-    const finishState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
+    const finishState: Board = {
+      head: { x: 1, y: 0 },
+      followers: [{ x: 0, y: 0 }],
+    };
     assertEquals(step(startState, direction), finishState);
   });
 
   await t.step("step right and pull tail", () => {
-    const startState: Board = { head: { x: 1, y: 0 }, tail: { x: 0, y: 0 } };
+    const startState: Board = {
+      head: { x: 1, y: 0 },
+      followers: [{ x: 0, y: 0 }],
+    };
     const direction: Direction = "R";
-    const finishState: Board = { head: { x: 2, y: 0 }, tail: { x: 1, y: 0 } };
+    const finishState: Board = {
+      head: { x: 2, y: 0 },
+      followers: [{ x: 1, y: 0 }],
+    };
     assertEquals(step(startState, direction), finishState);
   });
 
   await t.step("step up and pull tail", () => {
-    const startState: Board = { head: { x: 2, y: 2 }, tail: { x: 1, y: 1 } };
+    const startState: Board = {
+      head: { x: 2, y: 2 },
+      followers: [{ x: 1, y: 1 }],
+    };
     const direction: Direction = "U";
-    const finishState: Board = { head: { x: 2, y: 3 }, tail: { x: 2, y: 2 } };
+    const finishState: Board = {
+      head: { x: 2, y: 3 },
+      followers: [{ x: 2, y: 2 }],
+    };
     assertEquals(step(startState, direction), finishState);
   });
 
   await t.step("step right and pull tail", () => {
-    const startState: Board = { head: { x: 2, y: 2 }, tail: { x: 1, y: 1 } };
+    const startState: Board = {
+      head: { x: 2, y: 2 },
+      followers: [{ x: 1, y: 1 }],
+    };
     const direction: Direction = "R";
-    const finishState: Board = { head: { x: 3, y: 2 }, tail: { x: 2, y: 2 } };
+    const finishState: Board = {
+      head: { x: 3, y: 2 },
+      followers: [{ x: 2, y: 2 }],
+    };
     assertEquals(step(startState, direction), finishState);
   });
 
   await t.step("pull tail diagonally", () => {
-    const startState: Board = { head: { x: 1, y: 1 }, tail: { x: 0, y: 0 } };
+    const startState: Board = {
+      head: { x: 1, y: 1 },
+      followers: [{ x: 0, y: 0 }],
+    };
     const direction: Direction = "U";
-    const finishState: Board = { head: { x: 1, y: 2 }, tail: { x: 1, y: 1 } };
+    const finishState: Board = {
+      head: { x: 1, y: 2 },
+      followers: [{ x: 1, y: 1 }],
+    };
     assertEquals(step(startState, direction), finishState);
   });
 
