@@ -108,8 +108,7 @@ export function part1(input: string): number {
   const tailHistory: Set<string> = new Set();
   tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
 
-  const instructions = parseInput(input);
-  const steps = instructionsToSteps(instructions);
+  const steps = instructionsToSteps(parseInput(input));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
@@ -127,8 +126,7 @@ export function part2(input: string): number {
   const tailHistory: Set<string> = new Set();
   tailHistory.add(`${last(board.followers)?.x},${last(board.followers)?.y}`);
 
-  const instructions = parseInput(input);
-  const steps = instructionsToSteps(instructions);
+  const steps = instructionsToSteps(parseInput(input));
 
   steps.forEach((instruction) => {
     board = step(board, instruction);
