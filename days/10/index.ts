@@ -6,8 +6,8 @@ import {
 } from "https://cdn.skypack.dev/remeda?dts";
 
 type CPU = {
-  cycleNumber: number;
-  registerX: number;
+  cycle: number;
+  X: number;
 };
 
 interface Instruction {
@@ -43,36 +43,35 @@ function parseInput(input: string): AnyInstruction[] {
   });
 }
 
+function processInstruction(series: CPU[], instruction: AnyInstruction): CPU[] {
+  const results: CPU[] = [];
+  for (let i = 1; i <= instruction.cycles; i++) {
+    const cpu = clone(series[series.length - 1]);
+    // if it's the final cycle of the instruction, update the state
+    if (i === instruction.cycles) {
+      switch (instruction.name) {
+        case "noop":
+          break;
+        case "addx":
+          cpu.X += instruction.value; // mutates
+          break;
+      }
+    }
+    cpu.cycle++;
+    results.push(cpu);
+  }
+  return series.concat(results);
+}
+
 export function part1(input: string): number {
   const instructions = parseInput(input);
-
-  let lastCPU: CPU = { cycleNumber: 1, registerX: 1 };
-  const cpuHistory: CPU[] = [lastCPU];
-  let cpuCycle = 1;
-  instructions.forEach((instruction) => {
-    let instructionCycle = 1;
-    do {
-      cpuCycle++;
-      lastCPU = clone(lastCPU);
-      lastCPU.cycleNumber = cpuCycle;
-      if (instructionCycle === instruction.cycles) {
-        switch (instruction.name) {
-          case "noop":
-            break;
-          case "addx":
-            lastCPU.registerX += instruction.value; // mutates
-            break;
-        }
-      }
-      cpuHistory.push(lastCPU);
-      instructionCycle++;
-    } while (instructionCycle <= instruction.cycles);
-  });
+  const startState: CPU = { cycle: 1, X: 1 };
+  const series: CPU[] = instructions.reduce(processInstruction, [startState]);
 
   return sumBy(
     [20, 60, 100, 140, 180, 220].map((i) => {
-      const state = cpuHistory[i - 1];
-      return state.registerX * state.cycleNumber;
+      const state = series[i - 1];
+      return state.X * i;
     }),
     identity,
   );
