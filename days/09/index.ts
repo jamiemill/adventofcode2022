@@ -38,14 +38,14 @@ function parseInput(input: string): Instruction[] {
   });
 }
 
-function subtractVectors(left: Vector, right: Vector): Vector {
+export function subtractVectors(left: Vector, right: Vector): Vector {
   return {
     x: left.x - right.x,
     y: left.y - right.y,
   };
 }
 
-function addVectors(left: Vector, right: Vector): Vector {
+export function addVectors(left: Vector, right: Vector): Vector {
   return {
     x: left.x + right.x,
     y: left.y + right.y,
@@ -64,6 +64,19 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
   return instructions.map(explodeInstruction).flat();
 }
 
+// rules to follow:
+// * if leader is 2 steps directly U,D,L or R must move 1 step in that direction
+// * CHECK: my code does the above even if it's not directly in one direction?
+// * Otherwise, if the leader and follower aren't touching and aren't in the same row or column, the tail always moves one step diagonally to keep up:
+// can the follower always copy the last move of the leader?
+// or only if they are aligned and in tension?
+
+const abs = Math.abs;
+
+function clamp(num: number) {
+  return (num > 1) ? 1 : (num < 1) ? -1 : num;
+}
+
 export function getFollowerMove(
   leader: Vector,
   follower: Vector,
@@ -71,8 +84,18 @@ export function getFollowerMove(
 ): Vector {
   const gap = subtractVectors(leader, follower);
   let followerMove = { x: 0, y: 0 };
-  if (Math.abs(gap.x) > 1 || Math.abs(gap.y) > 1) {
-    followerMove = subtractVectors(gap, lastMoveOfLeader);
+  // touching, stay put
+  if (abs(gap.x) <= 1 && abs(gap.y) <= 1) {
+    return followerMove;
+  } // 2 apart in same row
+  else if (gap.y === 0 && abs(gap.x) >= 2) {
+    followerMove.x = clamp(gap.x);
+  } // 2 apart in same column
+  else if (gap.x === 0 && abs(gap.y) >= 2) {
+    followerMove.y = clamp(gap.y);
+  } // 2 apart and diagonal
+  else if ((gap.y !== 0 && abs(gap.x) >= 2) || gap.x !== 0 && abs(gap.y) >= 2) {
+    followerMove = { x: clamp(gap.x), y: clamp(gap.y) };
   }
   return followerMove;
 }
