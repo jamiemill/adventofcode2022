@@ -1,4 +1,4 @@
-import { clone, last, range, times } from "https://cdn.skypack.dev/remeda?dts";
+import { clone, last, times } from "https://cdn.skypack.dev/remeda?dts";
 
 export type Direction = "R" | "U" | "D" | "L";
 export type Instruction = {
@@ -122,7 +122,7 @@ export function part1(input: string): number {
 export function part2(input: string): number {
   let board: Board = {
     head: { x: 0, y: 0 },
-    followers: range(0, 9).map(() => ({ x: 0, y: 0 })),
+    followers: times(9, () => ({ x: 0, y: 0 })),
   };
   const tailHistory: Set<string> = new Set();
   tailHistory.add(tailAsStr(board.followers));
