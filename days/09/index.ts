@@ -62,7 +62,7 @@ function instructionsToSteps(instructions: Instruction[]): Direction[] {
 const abs = Math.abs;
 
 function clamp(num: number) {
-  return (num > 1) ? 1 : (num < 1) ? -1 : num;
+  return (num > 1) ? 1 : (num < -1) ? -1 : num;
 }
 
 export function getFollowerMove(
